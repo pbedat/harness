@@ -63,5 +63,9 @@ func (h cardsHandler) Handle(ctx context.Context, q Cards) ([]*CardReadModel, er
 		})
 	}
 
+	slices.SortFunc(readModels, func(x, y *CardReadModel) int {
+		return y.ModifiedAt.Compare(x.ModifiedAt)
+	})
+
 	return readModels, nil
 }

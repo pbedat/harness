@@ -29,6 +29,7 @@ func NewApplication() *app.Application {
 		},
 		Queries: app.Queries{
 			Cards: query.NewCardsHandler(logger, repo),
+			Card:  query.NewCardHandler(logger, repo),
 		},
 	}
 }

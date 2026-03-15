@@ -22,6 +22,7 @@ func newCardCmd(application *app.Application, boardID *string) *cobra.Command {
 		newEditCardCmd(application, boardID),
 		newArchiveCardsCmd(application, boardID),
 		newListCardsCmd(application, boardID),
+		newGetCardCmd(application, boardID),
 	)
 	return cardCmd
 }
@@ -197,6 +198,49 @@ func newListCardsCmd(application *app.Application, boardID *string) *cobra.Comma
 	cmd.Flags().StringVar(&column, "column", "", "Column name (required)")
 	cmd.Flags().IntVar(&limit, "limit", 0, "Max cards to return (0 = all)")
 	_ = cmd.MarkFlagRequired("column")
+
+	return cmd
+}
+
+func newGetCardCmd(application *app.Application, boardID *string) *cobra.Command {
+	var id string
+
+	cmd := &cobra.Command{
+		Use:   "get",
+		Short: "Get a single card and display it as markdown",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			if err := requireBoardID(boardID); err != nil {
+				return err
+			}
+			c, err := application.Queries.Card.Handle(
+				context.Background(),
+				query.Card{
+					BoardID: *boardID,
+					CardID:  id,
+				},
+			)
+			if err != nil {
+				return err
+			}
+
+			assignee := "unassigned"
+			if c.Assignee != nil {
+				assignee = *c.Assignee
+			}
+
+			fmt.Fprintf(cmd.OutOrStdout(), "# %s\n\n**ID:** %s\n**Assignee:** %s\n**Modified:** %s\n\n---\n\n%s\n",
+				c.Title,
+				c.ID,
+				assignee,
+				c.ModifiedAt.Format(time.RFC3339),
+				c.Description,
+			)
+			return nil
+		},
+	}
+
+	cmd.Flags().StringVar(&id, "id", "", "Card ID (required)")
+	_ = cmd.MarkFlagRequired("id")
 
 	return cmd
 }

@@ -132,6 +132,15 @@ func UnmarshalBoard(dto *UnmarshalBoardDTO) *Board {
 	return b
 }
 
+func (b *Board) Card(id string) (*Card, error) {
+	for _, col := range b.columns {
+		if card, ok := col.cards[id]; ok {
+			return card, nil
+		}
+	}
+	return nil, fmt.Errorf("card with id %s not found", id)
+}
+
 func (b *Board) Columns() iter.Seq[*Column] {
 	return func(yield func(*Column) bool) {
 		for _, columnName := range b.columnOrder {

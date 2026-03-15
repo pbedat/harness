@@ -22,4 +22,5 @@ type Commands struct {
 
 type Queries struct {
 	Cards query.CardsHandler
+	Card  query.CardHandler
 }

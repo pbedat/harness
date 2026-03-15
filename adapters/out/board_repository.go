@@ -229,7 +229,7 @@ func (b *BoardFSRepository) writeBoardToDisk(brd *board.Board, boardDir string) 
 			return err
 		}
 		cardIdx := 1
-		for _, card := range col.Cards() {
+		for card := range col.Cards() {
 			cardFile := filepath.Join(colDir, fmt.Sprintf("%d_%s.md", cardIdx, slug(card.Title())))
 			if err := afero.WriteFile(b.fs, cardFile, []byte(marshalCard(card)), 0644); err != nil {
 				return err

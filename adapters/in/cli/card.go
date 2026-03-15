@@ -7,6 +7,7 @@ import (
 
 	"github.com/pbedat/harness/app"
 	"github.com/pbedat/harness/app/command"
+	"github.com/pbedat/harness/app/query"
 	"github.com/spf13/cobra"
 )
 
@@ -20,6 +21,7 @@ func newCardCmd(application *app.Application, boardID *string) *cobra.Command {
 		newMoveCardCmd(application, boardID),
 		newEditCardCmd(application, boardID),
 		newArchiveCardsCmd(application, boardID),
+		newListCardsCmd(application, boardID),
 	)
 	return cardCmd
 }
@@ -157,6 +159,44 @@ func newEditCardCmd(application *app.Application, boardID *string) *cobra.Comman
 	cmd.Flags().StringVar(&assignee, "assignee", "", "New assignee username")
 
 	_ = cmd.MarkFlagRequired("id")
+
+	return cmd
+}
+
+func newListCardsCmd(application *app.Application, boardID *string) *cobra.Command {
+	var (
+		column string
+		limit  int
+	)
+
+	cmd := &cobra.Command{
+		Use:   "list",
+		Short: "List cards in a column",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			if err := requireBoardID(boardID); err != nil {
+				return err
+			}
+			cards, err := application.Queries.Cards.Handle(
+				context.Background(),
+				query.Cards{
+					BoardID: *boardID,
+					Column:  column,
+					Limit:   limit,
+				},
+			)
+			if err != nil {
+				return err
+			}
+			for _, c := range cards {
+				fmt.Fprintf(cmd.OutOrStdout(), "[%s] %s\n", c.ID, c.Title)
+			}
+			return nil
+		},
+	}
+
+	cmd.Flags().StringVar(&column, "column", "", "Column name (required)")
+	cmd.Flags().IntVar(&limit, "limit", 0, "Max cards to return (0 = all)")
+	_ = cmd.MarkFlagRequired("column")
 
 	return cmd
 }

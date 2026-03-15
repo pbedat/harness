@@ -6,6 +6,7 @@ import (
 	"github.com/pbedat/harness/adapters/out"
 	"github.com/pbedat/harness/app"
 	"github.com/pbedat/harness/app/command"
+	"github.com/pbedat/harness/app/query"
 	"github.com/rs/zerolog"
 	"github.com/spf13/afero"
 )
@@ -26,6 +27,8 @@ func NewApplication() *app.Application {
 			AddColumn:    command.NewAddColumnHandler(repo, logger),
 			RemoveColumn: command.NewRemoveColumnHandler(repo, logger),
 		},
-		Queries: app.Queries{},
+		Queries: app.Queries{
+			Cards: query.NewCardsHandler(logger, repo),
+		},
 	}
 }

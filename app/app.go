@@ -1,6 +1,9 @@
 package app
 
-import "github.com/pbedat/harness/app/command"
+import (
+	"github.com/pbedat/harness/app/command"
+	"github.com/pbedat/harness/app/query"
+)
 
 type Application struct {
 	Commands Commands
@@ -18,4 +21,5 @@ type Commands struct {
 }
 
 type Queries struct {
+	Cards query.CardsHandler
 }

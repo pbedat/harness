@@ -1,6 +1,7 @@
 package board
 
 import (
+	"slices"
 	"testing"
 	"time"
 )
@@ -304,7 +305,7 @@ func TestColumnCards(t *testing.T) {
 	for c := range b.Columns() {
 		col = c
 	}
-	cards := col.Cards()
+	cards := slices.Collect(col.Cards())
 	if len(cards) != 2 {
 		t.Errorf("expected 2 cards, got %d", len(cards))
 	}

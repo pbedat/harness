@@ -55,6 +55,16 @@ func (c *Column) Name() string {
 	return c.name
 }
 
+func (c *Column) Cards() iter.Seq[*Card] {
+	return func(yield func(*Card) bool) {
+		for _, card := range c.cards {
+			if !yield(card) {
+				return
+			}
+		}
+	}
+}
+
 type Card struct {
 	id          string
 	title       string
@@ -69,6 +79,14 @@ func (b *Board) ID() string {
 
 func (b *Board) Name() string {
 	return b.name
+}
+
+func (b *Board) Column(name string) (*Column, error) {
+	col, ok := b.columns[name]
+	if !ok {
+		return nil, fmt.Errorf("column with name %s not found", name)
+	}
+	return col, nil
 }
 
 type UnmarshalCardDTO struct {

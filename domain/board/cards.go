@@ -151,15 +151,6 @@ func (b *Board) FindCard(id string) *Card {
 	return card
 }
 
-
-func (c *Column) Cards() []*Card {
-	cards := make([]*Card, 0, len(c.cards))
-	for _, card := range c.cards {
-		cards = append(cards, card)
-	}
-	return cards
-}
-
 type EditCardDTO struct {
 	ID       string
 	Title    string

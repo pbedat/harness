@@ -39,6 +39,12 @@ func newAddCardCmd(application *app.Application, boardID *string) *cobra.Command
 	cmd := &cobra.Command{
 		Use:   "add",
 		Short: "Add a card to a column",
+		Example: `  kanban --board-id my-board card add --id task-1 --title "Fix login bug" --column "To Do"
+  # Output: Card "task-1" added to column "To Do".
+
+  # With optional fields
+  kanban --board-id my-board card add --id task-2 --title "Add tests" --column "To Do" --assignee alice --description "Add unit tests for auth module"
+  # Output: Card "task-2" added to column "To Do".`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if err := requireBoardID(boardID); err != nil {
 				return err
@@ -88,6 +94,8 @@ func newMoveCardCmd(application *app.Application, boardID *string) *cobra.Comman
 	cmd := &cobra.Command{
 		Use:   "move",
 		Short: "Move a card to a different column",
+		Example: `  kanban --board-id my-board card move --id task-1 --to "In Progress"
+  # Output: Card "task-1" moved to "In Progress".`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if err := requireBoardID(boardID); err != nil {
 				return err
@@ -128,6 +136,13 @@ func newEditCardCmd(application *app.Application, boardID *string) *cobra.Comman
 	cmd := &cobra.Command{
 		Use:   "edit",
 		Short: "Edit an existing card",
+		Example: `  # Update the title
+  kanban --board-id my-board card edit --id task-1 --title "Fix login bug (urgent)"
+  # Output: Card "task-1" updated.
+
+  # Reassign and update description
+  kanban --board-id my-board card edit --id task-1 --assignee bob --body "Updated requirements"
+  # Output: Card "task-1" updated.`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if err := requireBoardID(boardID); err != nil {
 				return err
@@ -179,6 +194,13 @@ func newListCardsCmd(application *app.Application, boardID *string) *cobra.Comma
 	cmd := &cobra.Command{
 		Use:   "list",
 		Short: "List cards in a column",
+		Example: `  kanban --board-id my-board card list --column "In Progress"
+  # Output:
+  # [task-1] Fix login bug
+  # [task-3] Update docs
+
+  # Limit results
+  kanban --board-id my-board card list --column "To Do" --limit 5`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if err := requireBoardID(boardID); err != nil {
 				return err
@@ -214,6 +236,17 @@ func newGetCardCmd(application *app.Application, boardID *string) *cobra.Command
 	cmd := &cobra.Command{
 		Use:   "get",
 		Short: "Get a single card and display it as markdown",
+		Example: `  kanban --board-id my-board card get --id task-1
+  # Output:
+  # # Fix login bug
+  #
+  # **ID:** task-1
+  # **Assignee:** alice
+  # **Modified:** 2025-01-15T10:30:00Z
+  #
+  # ---
+  #
+  # Users cannot log in with valid credentials.`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if err := requireBoardID(boardID); err != nil {
 				return err
@@ -260,6 +293,12 @@ func newArchiveCardsCmd(application *app.Application, boardID *string) *cobra.Co
 	cmd := &cobra.Command{
 		Use:   "archive",
 		Short: "Archive stale cards from a column",
+		Example: `  # Archive cards older than 30 days (default)
+  kanban --board-id my-board card archive --column "Done"
+  # Output: Stale cards archived from column "Done".
+
+  # Archive cards older than 7 days
+  kanban --board-id my-board card archive --column "Done" --stale 168h`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if err := requireBoardID(boardID); err != nil {
 				return err

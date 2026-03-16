@@ -27,6 +27,8 @@ func newAddColumnCmd(application *app.Application, boardID *string) *cobra.Comma
 	cmd := &cobra.Command{
 		Use:   "add",
 		Short: "Add a column to a board",
+		Example: `  kanban --board-id my-board column add --name "Code Review"
+  # Output: Column "Code Review" added.`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if err := requireBoardID(boardID); err != nil {
 				return err
@@ -58,6 +60,8 @@ func newRemoveColumnCmd(application *app.Application, boardID *string) *cobra.Co
 	cmd := &cobra.Command{
 		Use:   "remove",
 		Short: "Remove a column from a board (cards are migrated to the nearest column)",
+		Example: `  kanban --board-id my-board column remove --name "Code Review"
+  # Output: Column "Code Review" removed.`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if err := requireBoardID(boardID); err != nil {
 				return err

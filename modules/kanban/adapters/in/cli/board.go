@@ -28,6 +28,9 @@ func newCreateBoardCmd(application *app.Application) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "create",
 		Short: "Create a new board",
+		Example: `  # Create a board with three columns
+  kanban board create --id my-board --name "My Project" --columns "To Do,In Progress,Done"
+  # Output: Board "my-board" created.`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			err := application.Commands.CreateBoard.Handle(
 				context.Background(),

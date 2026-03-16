@@ -20,6 +20,7 @@ func newServeCmd(application *app.Application) *cobra.Command {
 	return &cobra.Command{
 		Use:   "serve",
 		Short: "Start the email server",
+		Example: `  email serve`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 

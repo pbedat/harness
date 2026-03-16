@@ -52,6 +52,16 @@ func newListCmd(application *app.Application, jsonOutput *bool) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "list",
 		Short: "List emails in a mailbox",
+		Example: `  email list --mailbox inbox
+  # Output:
+  # [msg-123] Weekly update  From: alice@example.com  To: bob@example.com
+  # [msg-124] Bug report     From: carol@example.com  To: bob@example.com
+
+  # Filter to unread only
+  email list --mailbox inbox --unread
+
+  # Limit results and output as JSON
+  email list --mailbox inbox --limit 10 --json`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			mb, err := domain.MailboxString(mailbox)
 			if err != nil {
@@ -105,6 +115,18 @@ func newReadCmd(application *app.Application, jsonOutput *bool) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "read",
 		Short: "Read a single email",
+		Example: `  email read --id msg-123
+  # Output:
+  # Subject: Weekly update
+  # From: alice@example.com
+  # To: bob@example.com
+  # Sent: 2025-01-15T10:30:00Z
+  # Status: unread
+  #
+  # Hey Bob, here's this week's update...
+
+  # Output as JSON
+  email read --id msg-123 --json`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			m, err := application.Queries.Mail.Handle(
 				context.Background(),
@@ -165,6 +187,12 @@ func newMoveCmd(application *app.Application, jsonOutput *bool) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "move",
 		Short: "Move an email to a different mailbox",
+		Example: `  email move --id msg-123 --to archive
+  # Output: Email "msg-123" moved to "archive".
+
+  # Output as JSON
+  email move --id msg-123 --to trash --json
+  # Output: {"id": "msg-123", "movedTo": "trash"}`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			mb, err := domain.MailboxString(to)
 			if err != nil {

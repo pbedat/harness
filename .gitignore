@@ -1,2 +1,4 @@
 .data
 coverage.out
+.env
+.maildata

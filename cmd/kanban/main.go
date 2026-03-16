@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/pbedat/harness/adapters/in/cli"
-	"github.com/pbedat/harness/service"
+	"github.com/pbedat/harness/modules/kanban/adapters/in/cli"
+	"github.com/pbedat/harness/modules/kanban/service"
 )
 
 func main() {

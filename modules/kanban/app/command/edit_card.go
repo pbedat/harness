@@ -11,8 +11,8 @@ import (
 type EditCard struct {
 	BoardID  string
 	ID       string
-	Title    string
-	Body     string
+	Title    *string
+	Body     *string
 	Assignee *string
 }
 

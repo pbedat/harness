@@ -153,8 +153,8 @@ func (b *Board) FindCard(id string) *Card {
 
 type EditCardDTO struct {
 	ID       string
-	Title    string
-	Body     string
+	Title    *string
+	Body     *string
 	Assignee *string
 }
 
@@ -164,9 +164,15 @@ func (b *Board) EditCard(dto *EditCardDTO) error {
 		return fmt.Errorf("card with id '%s' not found in any column", dto.ID)
 	}
 
-	existing.title = dto.Title
-	existing.description = dto.Body
-	existing.assignee = dto.Assignee
+	if dto.Title != nil {
+		existing.title = *dto.Title
+	}
+	if dto.Body != nil {
+		existing.description = *dto.Body
+	}
+	if dto.Assignee != nil {
+		existing.assignee = dto.Assignee
+	}
 	existing.modifiedAt = time.Now()
 
 	return nil

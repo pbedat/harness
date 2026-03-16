@@ -132,7 +132,13 @@ func newEditCardCmd(application *app.Application, boardID *string) *cobra.Comman
 			if err := requireBoardID(boardID); err != nil {
 				return err
 			}
-			var assigneePtr *string
+			var titlePtr, bodyPtr, assigneePtr *string
+			if cmd.Flags().Changed("title") {
+				titlePtr = &title
+			}
+			if cmd.Flags().Changed("body") {
+				bodyPtr = &body
+			}
 			if cmd.Flags().Changed("assignee") {
 				assigneePtr = &assignee
 			}
@@ -141,8 +147,8 @@ func newEditCardCmd(application *app.Application, boardID *string) *cobra.Comman
 				command.EditCard{
 					BoardID:  *boardID,
 					ID:       id,
-					Title:    title,
-					Body:     body,
+					Title:    titlePtr,
+					Body:     bodyPtr,
 					Assignee: assigneePtr,
 				},
 			)

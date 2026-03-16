@@ -271,7 +271,9 @@ func TestEditCard(t *testing.T) {
 		b, _ := NewBoard("1", "Board", "To Do")
 		_ = b.AddCard(&AddCardDTO{ID: "c1", Title: "Old Title"}, "To Do")
 		assignee := "bob"
-		err := b.EditCard(&EditCardDTO{ID: "c1", Title: "New Title", Body: "New Body", Assignee: &assignee})
+		newTitle := "New Title"
+		newBody := "New Body"
+		err := b.EditCard(&EditCardDTO{ID: "c1", Title: &newTitle, Body: &newBody, Assignee: &assignee})
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
@@ -287,9 +289,27 @@ func TestEditCard(t *testing.T) {
 		}
 	})
 
+	t.Run("partial update preserves other fields", func(t *testing.T) {
+		b, _ := NewBoard("1", "Board", "To Do")
+		_ = b.AddCard(&AddCardDTO{ID: "c1", Title: "Original Title", Description: "Original Body"}, "To Do")
+		newBody := "Updated Body"
+		err := b.EditCard(&EditCardDTO{ID: "c1", Body: &newBody})
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+		card := b.FindCard("c1")
+		if card.Title() != "Original Title" {
+			t.Errorf("expected title 'Original Title', got %q", card.Title())
+		}
+		if card.Description() != "Updated Body" {
+			t.Errorf("expected description 'Updated Body', got %q", card.Description())
+		}
+	})
+
 	t.Run("card not found", func(t *testing.T) {
 		b, _ := NewBoard("1", "Board", "To Do")
-		err := b.EditCard(&EditCardDTO{ID: "nonexistent", Title: "Title"})
+		title := "Title"
+		err := b.EditCard(&EditCardDTO{ID: "nonexistent", Title: &title})
 		if err == nil {
 			t.Fatal("expected error for nonexistent card")
 		}

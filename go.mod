@@ -1,10 +1,11 @@
 module github.com/pbedat/harness
 
-go 1.26.1
+go 1.25.0
 
 require (
 	github.com/getkin/kin-openapi v0.134.0
 	github.com/go-playground/validator/v10 v10.30.1
+	github.com/joho/godotenv v1.5.1
 	github.com/keighl/postmark v0.0.0-20190821160221-28358b1a94e3
 	github.com/labstack/echo/v5 v5.0.4
 	github.com/rs/zerolog v1.34.0
@@ -54,7 +55,6 @@ require (
 	github.com/hdevalence/ed25519consensus v0.2.0 // indirect
 	github.com/huin/goupnp v1.3.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
-	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/jsimonetti/rtnetlink v1.4.0 // indirect
 	github.com/klauspost/compress v1.18.2 // indirect

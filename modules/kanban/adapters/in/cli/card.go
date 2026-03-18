@@ -3,6 +3,7 @@ package cli
 import (
 	"context"
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/pbedat/harness/modules/kanban/app"
@@ -29,26 +30,43 @@ func newCardCmd(application *app.Application, boardID *string) *cobra.Command {
 
 func newAddCardCmd(application *app.Application, boardID *string) *cobra.Command {
 	var (
-		id          string
-		title       string
-		column      string
-		description string
-		assignee    string
+		id              string
+		title           string
+		column          string
+		description     string
+		descriptionFile string
+		assignee        string
 	)
 
 	cmd := &cobra.Command{
 		Use:   "add",
 		Short: "Add a card to a column",
-		Example: `  kanban --board-id my-board card add --id task-1 --title "Fix login bug" --column "To Do"
+		Example: `  kanban --board-id my-board card add --id task-1 --title "Fix login bug" --column "To Do" --description "Fix the login flow"
   # Output: Card "task-1" added to column "To Do".
 
-  # With optional fields
-  kanban --board-id my-board card add --id task-2 --title "Add tests" --column "To Do" --assignee alice --description "Add unit tests for auth module"
+  # Read description from a file
+  kanban --board-id my-board card add --id task-2 --title "Add tests" --column "To Do" --description-file ./description.md
   # Output: Card "task-2" added to column "To Do".`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if err := requireBoardID(boardID); err != nil {
 				return err
 			}
+
+			hasDescription := cmd.Flags().Changed("description")
+			hasDescriptionFile := cmd.Flags().Changed("description-file")
+
+			if !hasDescription && !hasDescriptionFile {
+				return fmt.Errorf("either --description or --description-file must be provided")
+			}
+
+			if hasDescriptionFile {
+				data, err := os.ReadFile(descriptionFile)
+				if err != nil {
+					return fmt.Errorf("reading description file: %w", err)
+				}
+				description = string(data)
+			}
+
 			var assigneePtr *string
 			if cmd.Flags().Changed("assignee") {
 				assigneePtr = &assignee
@@ -76,7 +94,9 @@ func newAddCardCmd(application *app.Application, boardID *string) *cobra.Command
 	cmd.Flags().StringVar(&title, "title", "", "Card title (required)")
 	cmd.Flags().StringVar(&column, "column", "", "Target column name (required)")
 	cmd.Flags().StringVar(&description, "description", "", "Card description")
+	cmd.Flags().StringVar(&descriptionFile, "description-file", "", "Read card description from file")
 	cmd.Flags().StringVar(&assignee, "assignee", "", "Assignee username")
+	cmd.MarkFlagsMutuallyExclusive("description", "description-file")
 
 	_ = cmd.MarkFlagRequired("id")
 	_ = cmd.MarkFlagRequired("title")
@@ -130,6 +150,7 @@ func newEditCardCmd(application *app.Application, boardID *string) *cobra.Comman
 		id       string
 		title    string
 		body     string
+		bodyFile string
 		assignee string
 	)
 
@@ -142,6 +163,10 @@ func newEditCardCmd(application *app.Application, boardID *string) *cobra.Comman
 
   # Reassign and update description
   kanban --board-id my-board card edit --id task-1 --assignee bob --body "Updated requirements"
+  # Output: Card "task-1" updated.
+
+  # Update description from a file
+  kanban --board-id my-board card edit --id task-1 --body-file ./description.md
   # Output: Card "task-1" updated.`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if err := requireBoardID(boardID); err != nil {
@@ -151,7 +176,14 @@ func newEditCardCmd(application *app.Application, boardID *string) *cobra.Comman
 			if cmd.Flags().Changed("title") {
 				titlePtr = &title
 			}
-			if cmd.Flags().Changed("body") {
+			if cmd.Flags().Changed("body-file") {
+				data, err := os.ReadFile(bodyFile)
+				if err != nil {
+					return fmt.Errorf("reading body file: %w", err)
+				}
+				b := string(data)
+				bodyPtr = &b
+			} else if cmd.Flags().Changed("body") {
 				bodyPtr = &body
 			}
 			if cmd.Flags().Changed("assignee") {
@@ -178,7 +210,9 @@ func newEditCardCmd(application *app.Application, boardID *string) *cobra.Comman
 	cmd.Flags().StringVar(&id, "id", "", "Card ID to edit (required)")
 	cmd.Flags().StringVar(&title, "title", "", "New title")
 	cmd.Flags().StringVar(&body, "body", "", "New description body")
+	cmd.Flags().StringVar(&bodyFile, "body-file", "", "Read description body from file")
 	cmd.Flags().StringVar(&assignee, "assignee", "", "New assignee username")
+	cmd.MarkFlagsMutuallyExclusive("body", "body-file")
 
 	_ = cmd.MarkFlagRequired("id")
 

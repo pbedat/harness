@@ -17,13 +17,14 @@ type Header struct {
 }
 
 type MailReadModel struct {
-	Subject string
-	From    string
-	To      []string
-	Body    string
-	Headers []Header
-	SentAt  string
-	ReadAt  *string
+	Subject  string
+	From     string
+	To       []string
+	Body     string
+	HtmlBody string
+	Headers  []Header
+	SentAt   string
+	ReadAt   *string
 }
 
 type MailHandler decorator.QueryHandler[Mail, *MailReadModel]

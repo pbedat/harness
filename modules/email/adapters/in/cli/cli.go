@@ -167,7 +167,11 @@ func newReadCmd(application *app.Application, jsonOutput *bool) *cobra.Command {
 			for _, h := range m.Headers {
 				fmt.Fprintf(cmd.OutOrStdout(), "%s: %s\n", h.Name, h.Value)
 			}
-			fmt.Fprintf(cmd.OutOrStdout(), "\n%s\n", m.Body)
+			body := m.Body
+			if body == "" {
+				body = m.HtmlBody
+			}
+			fmt.Fprintf(cmd.OutOrStdout(), "\n%s\n", body)
 			return nil
 		},
 	}

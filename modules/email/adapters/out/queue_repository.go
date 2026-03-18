@@ -59,6 +59,7 @@ func (r *QueueRepository) Update(ctx context.Context, mailbox domain.Mailbox, fn
 			To:        se.To,
 			Subject:   se.Subject,
 			Body:      se.Body,
+			HtmlBody:  se.HtmlBody,
 			Headers:   storedHeadersToQueue(se.Headers),
 			CreatedAt: se.CreatedAt,
 		}
@@ -91,6 +92,7 @@ func (r *QueueRepository) Update(ctx context.Context, mailbox domain.Mailbox, fn
 				To:        e.Email.To,
 				Subject:   e.Email.Subject,
 				Body:      e.Email.Body,
+				HtmlBody:  e.Email.HtmlBody,
 				Headers:   queueHeadersToStored(e.Email.Headers),
 				CreatedAt: e.Email.CreatedAt,
 				Mailbox:   mailboxDirs[mailbox],

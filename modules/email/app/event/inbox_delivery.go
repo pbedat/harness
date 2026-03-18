@@ -42,6 +42,7 @@ func (h *InboxDeliveryHandler) Handle(ctx context.Context, event any) error {
 			To:        queueMail.To(),
 			Subject:   queueMail.Subject(),
 			Body:      queueMail.Body(),
+			HtmlBody:  queueMail.HtmlBody(),
 			Headers:   emailHeaders,
 			CreatedAt: queueMail.CreatedAt(),
 		})

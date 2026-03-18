@@ -62,6 +62,7 @@ func (q *Queue) Enqueue(email *Email) error {
 			To:        email.to,
 			Subject:   email.subject,
 			Body:      email.body,
+			HtmlBody:  email.htmlBody,
 			Headers:   email.headers,
 			CreatedAt: email.createdAt,
 		},
@@ -81,6 +82,7 @@ type Email struct {
 	to        []string
 	subject   string
 	body      string
+	htmlBody  string
 	headers   []Header
 	createdAt time.Time
 }
@@ -90,6 +92,7 @@ func (e *Email) From() string         { return e.from }
 func (e *Email) To() []string         { return e.to }
 func (e *Email) Subject() string      { return e.subject }
 func (e *Email) Body() string         { return e.body }
+func (e *Email) HtmlBody() string     { return e.htmlBody }
 func (e *Email) Headers() []Header    { return e.headers }
 func (e *Email) CreatedAt() time.Time { return e.createdAt }
 
@@ -99,6 +102,7 @@ type EmailDTO struct {
 	To        []string `validate:"required,dive,email"`
 	Subject   string
 	Body      string
+	HtmlBody  string
 	Headers   []Header
 	CreatedAt time.Time `validate:"required"`
 }
@@ -156,6 +160,7 @@ func (dto *EmailDTO) ToEmail() (*Email, error) {
 		to:        dto.To,
 		subject:   dto.Subject,
 		body:      dto.Body,
+		htmlBody:  dto.HtmlBody,
 		headers:   dto.Headers,
 		createdAt: dto.CreatedAt,
 	}, nil

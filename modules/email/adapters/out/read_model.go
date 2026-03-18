@@ -34,13 +34,14 @@ func (r *ReadModelAdapter) GetMail(ctx context.Context, id string) (*query.MailR
 	}
 
 	return &query.MailReadModel{
-		Subject: stored.Subject,
-		From:    stored.From,
-		To:      stored.To,
-		Body:    stored.Body,
-		Headers: headers,
-		SentAt:  stored.CreatedAt.String(),
-		ReadAt:  readAt,
+		Subject:  stored.Subject,
+		From:     stored.From,
+		To:       stored.To,
+		Body:     stored.Body,
+		HtmlBody: stored.HtmlBody,
+		Headers:  headers,
+		SentAt:   stored.CreatedAt.String(),
+		ReadAt:   readAt,
 	}, nil
 }
 

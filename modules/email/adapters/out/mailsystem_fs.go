@@ -51,6 +51,7 @@ type storedEmail struct {
 	To        []string       `json:"to"`
 	Subject   string         `json:"subject"`
 	Body      string         `json:"body"`
+	HtmlBody  string         `json:"htmlBody,omitempty"`
 	Headers   []storedHeader `json:"headers,omitempty"`
 	CreatedAt time.Time      `json:"createdAt"`
 	ReadAt    *time.Time     `json:"readAt,omitempty"`

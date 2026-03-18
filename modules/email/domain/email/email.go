@@ -26,6 +26,7 @@ type NewEmailDTO struct {
 	To        []string       `validate:"required,dive,email"`
 	Subject   string
 	Body      string
+	HtmlBody  string
 	Headers   []Header
 	CreatedAt time.Time `validate:"required"`
 }
@@ -42,6 +43,7 @@ func (dto *NewEmailDTO) ToEmail() (*Email, error) {
 		to:        dto.To,
 		subject:   dto.Subject,
 		body:      dto.Body,
+		htmlBody:  dto.HtmlBody,
 		headers:   dto.Headers,
 		createdAt: dto.CreatedAt,
 	}, nil
@@ -74,6 +76,7 @@ type Email struct {
 	to        []string
 	subject   string
 	body      string
+	htmlBody  string
 	headers   []Header
 	createdAt time.Time
 	readAt    *time.Time
@@ -91,6 +94,7 @@ func (e *Email) From() string            { return e.from }
 func (e *Email) To() []string            { return e.to }
 func (e *Email) Subject() string         { return e.subject }
 func (e *Email) Body() string            { return e.body }
+func (e *Email) HtmlBody() string        { return e.htmlBody }
 func (e *Email) Headers() []Header       { return e.headers }
 func (e *Email) CreatedAt() time.Time    { return e.createdAt }
 func (e *Email) ReadAt() *time.Time      { return e.readAt }
@@ -103,6 +107,7 @@ type UnmarshalEmailDTO struct {
 	To        []string
 	Subject   string
 	Body      string
+	HtmlBody  string
 	Headers   []Header
 	CreatedAt time.Time
 	Mailbox   domain.Mailbox
@@ -116,6 +121,7 @@ func UnmarshalEmail(dto *UnmarshalEmailDTO) *Email {
 		to:        dto.To,
 		subject:   dto.Subject,
 		body:      dto.Body,
+		htmlBody:  dto.HtmlBody,
 		headers:   dto.Headers,
 		createdAt: dto.CreatedAt,
 		mailbox:   dto.Mailbox,

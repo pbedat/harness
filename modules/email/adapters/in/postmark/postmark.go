@@ -61,6 +61,7 @@ func (h *handler) handleInbound(c *echo.Context) error {
 		To:        recipients,
 		Subject:   msg.Subject,
 		Body:      msg.TextBody,
+		HtmlBody:  msg.HtmlBody,
 		Headers:   headers,
 		CreatedAt: createdAt,
 	}

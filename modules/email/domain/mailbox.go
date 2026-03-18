@@ -20,6 +20,7 @@ func (Mailbox) JSONSchema(gen *openapi3gen.Generator, schemas openapi3.Schemas) 
 
 const (
 	MailboxUngültig Mailbox = iota
+	MailboxDraft
 	MailboxInbox
 	MailboxOutbox
 	MailboxArchive

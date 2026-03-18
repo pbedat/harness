@@ -65,6 +65,7 @@ type folderMeta struct {
 }
 
 var mailboxDirs = map[domain.Mailbox]string{
+	domain.MailboxDraft:   "draft",
 	domain.MailboxInbox:   "inbox",
 	domain.MailboxOutbox:  "outbox",
 	domain.MailboxArchive: "archive",
@@ -163,6 +164,33 @@ func (m *MailsystemFS) listEmailsInDir(dir string) ([]*storedEmail, error) {
 		emails = append(emails, &e)
 	}
 	return emails, nil
+}
+
+func (m *MailsystemFS) WriteQueueMeta(mailbox domain.Mailbox, allowedRecipients []string, allowedFrom *string) error {
+	dir := m.mailboxDir(mailbox)
+	if err := m.fs.MkdirAll(dir, 0755); err != nil {
+		return fmt.Errorf("creating mailbox dir: %w", err)
+	}
+
+	// Read existing meta to preserve limit
+	existing, err := m.readQueueMeta(mailbox)
+	if err != nil {
+		return err
+	}
+
+	meta := &folderMeta{
+		AllowedRecipients: allowedRecipients,
+		AllowedFrom:       allowedFrom,
+		Limit:             existing.Limit,
+	}
+
+	data, err := json.MarshalIndent(meta, "", "  ")
+	if err != nil {
+		return fmt.Errorf("marshaling folder meta: %w", err)
+	}
+
+	path := filepath.Join(dir, "__folder.json")
+	return afero.WriteFile(m.fs, path, data, 0644)
 }
 
 func (m *MailsystemFS) readQueueMeta(mailbox domain.Mailbox) (*folderMeta, error) {

@@ -30,7 +30,7 @@ func TestPostmarkToInbox(t *testing.T) {
 		return nil
 	})
 
-	application := service.NewApplication(bus, afero.NewMemMapFs(), ".maildata")
+	application := service.NewApplication(bus, afero.NewMemMapFs(), ".maildata", func() string { return "" })
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()

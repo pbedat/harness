@@ -62,7 +62,28 @@ func (e *Email) MarkAsRead() {
 func (e *Email) Move(newMailbox domain.Mailbox) error {
 
 	e.mailbox = newMailbox
+	e.events = append(e.events, &MovedEvent{
+		EmailID:  e.id,
+		Mailbox:  newMailbox,
+		To:       e.to,
+		From:     e.from,
+		Subject:  e.subject,
+		Body:     e.body,
+		HtmlBody: e.htmlBody,
+		Headers:  e.headers,
+	})
 	return nil
+}
+
+type MovedEvent struct {
+	EmailID  string
+	Mailbox  domain.Mailbox
+	To       []string
+	From     string
+	Subject  string
+	Body     string
+	HtmlBody string
+	Headers  []Header
 }
 
 type Header struct {

@@ -25,14 +25,19 @@ func main() {
 	viper.AutomaticEnv()
 
 	bus := events.NewBus()
-	app := service.NewApplication(bus, afero.NewOsFs(), ".maildata")
+	app := service.NewApplication(bus, afero.NewOsFs(), ".maildata", func() string {
+		return viper.GetString("postmark_server_token")
+	})
 
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer cancel()
 
 	bus.Run(ctx)
 
-	cmd := cli.Create(app)
+	cmd := cli.Create(app, bus)
+	cmd.PersistentFlags().String("postmark-server-token", "", "Postmark server API token")
+	_ = viper.BindPFlag("postmark_server_token", cmd.PersistentFlags().Lookup("postmark-server-token"))
+
 	cmd.SetContext(ctx)
 	if err := cmd.Execute(); err != nil {
 		fmt.Printf("Error: %v\n", err)

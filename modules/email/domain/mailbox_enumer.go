@@ -8,11 +8,11 @@ import (
 	"strings"
 )
 
-const _MailboxName = "UngültigInboxOutboxArchiveSent"
+const _MailboxName = "UngültigDraftInboxOutboxArchiveSent"
 
-var _MailboxIndex = [...]uint8{0, 9, 14, 20, 27, 31}
+var _MailboxIndex = [...]uint8{0, 9, 14, 19, 25, 32, 36}
 
-const _MailboxLowerName = "ungültiginboxoutboxarchivesent"
+const _MailboxLowerName = "ungültigdraftinboxoutboxarchivesent"
 
 func (i Mailbox) String() string {
 	if i < 0 || i >= Mailbox(len(_MailboxIndex)-1) {
@@ -26,33 +26,37 @@ func (i Mailbox) String() string {
 func _MailboxNoOp() {
 	var x [1]struct{}
 	_ = x[MailboxUngültig-(0)]
-	_ = x[MailboxInbox-(1)]
-	_ = x[MailboxOutbox-(2)]
-	_ = x[MailboxArchive-(3)]
-	_ = x[MailboxSent-(4)]
+	_ = x[MailboxDraft-(1)]
+	_ = x[MailboxInbox-(2)]
+	_ = x[MailboxOutbox-(3)]
+	_ = x[MailboxArchive-(4)]
+	_ = x[MailboxSent-(5)]
 }
 
-var _MailboxValues = []Mailbox{MailboxUngültig, MailboxInbox, MailboxOutbox, MailboxArchive, MailboxSent}
+var _MailboxValues = []Mailbox{MailboxUngültig, MailboxDraft, MailboxInbox, MailboxOutbox, MailboxArchive, MailboxSent}
 
 var _MailboxNameToValueMap = map[string]Mailbox{
 	_MailboxName[0:9]:        MailboxUngültig,
 	_MailboxLowerName[0:9]:   MailboxUngültig,
-	_MailboxName[9:14]:       MailboxInbox,
-	_MailboxLowerName[9:14]:  MailboxInbox,
-	_MailboxName[14:20]:      MailboxOutbox,
-	_MailboxLowerName[14:20]: MailboxOutbox,
-	_MailboxName[20:27]:      MailboxArchive,
-	_MailboxLowerName[20:27]: MailboxArchive,
-	_MailboxName[27:31]:      MailboxSent,
-	_MailboxLowerName[27:31]: MailboxSent,
+	_MailboxName[9:14]:       MailboxDraft,
+	_MailboxLowerName[9:14]:  MailboxDraft,
+	_MailboxName[14:19]:      MailboxInbox,
+	_MailboxLowerName[14:19]: MailboxInbox,
+	_MailboxName[19:25]:      MailboxOutbox,
+	_MailboxLowerName[19:25]: MailboxOutbox,
+	_MailboxName[25:32]:      MailboxArchive,
+	_MailboxLowerName[25:32]: MailboxArchive,
+	_MailboxName[32:36]:      MailboxSent,
+	_MailboxLowerName[32:36]: MailboxSent,
 }
 
 var _MailboxNames = []string{
 	_MailboxName[0:9],
 	_MailboxName[9:14],
-	_MailboxName[14:20],
-	_MailboxName[20:27],
-	_MailboxName[27:31],
+	_MailboxName[14:19],
+	_MailboxName[19:25],
+	_MailboxName[25:32],
+	_MailboxName[32:36],
 }
 
 // MailboxString retrieves an enum value from the enum constants string name.

@@ -3,11 +3,12 @@ package events
 import (
 	"context"
 	"log/slog"
+	"sync"
 )
 
 type Bus struct {
-	c chan any
-
+	c         chan any
+	wg        sync.WaitGroup
 	listeners []Listener
 }
 
@@ -28,6 +29,7 @@ func (b *Bus) Run(ctx context.Context) {
 						slog.Error("error processing event", "error", err)
 					}
 				}
+				b.wg.Done()
 			case <-ctx.Done():
 				return
 			}
@@ -38,8 +40,13 @@ func (b *Bus) Run(ctx context.Context) {
 type Listener func(ctx context.Context, event any) error
 
 func (b *Bus) Publish(ctx context.Context, event any) error {
+	b.wg.Add(1)
 	b.c <- event
 	return nil
+}
+
+func (b *Bus) Drain() {
+	b.wg.Wait()
 }
 
 func (b *Bus) Subscribe(listener Listener) {

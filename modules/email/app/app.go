@@ -11,9 +11,11 @@ type Application struct {
 }
 
 type Commands struct {
-	Enqueue  command.EnqueueHandler
-	MarkRead command.MarkReadHandler
-	Move     command.MoveHandler
+	Draft          command.DraftHandler
+	Enqueue        command.EnqueueHandler
+	MarkRead       command.MarkReadHandler
+	Move           command.MoveHandler
+	ConfigureQueue command.ConfigureQueueHandler
 }
 
 type Queries struct {

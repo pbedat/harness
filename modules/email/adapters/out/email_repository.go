@@ -128,5 +128,11 @@ func (r *EmailRepository) Update(ctx context.Context, id string, fn func(*email.
 		}
 	}
 
+	for _, event := range e.Events() {
+		if err := r.bus.Publish(ctx, event); err != nil {
+			return err
+		}
+	}
+
 	return r.storage.writeEmail(stored)
 }
